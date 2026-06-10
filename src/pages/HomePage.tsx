@@ -54,7 +54,7 @@ const CARDS: CardDef[] = [
   },
   {
     key: 'kernel', icon: Orbit, title: 'SVMとカーネル・トリック',
-    desc: <>直線では分離できないドーナツ型データを<strong className="text-slate-700">3次元へ写像</strong>し、平面でスパッと切れる魔法を可視化します。</>,
+    desc: <>直線では分離できないドーナツ型データを<strong className="text-slate-700">3次元へ写像</strong>し、平面で分離できるようになる様子を可視化します。</>,
     tag: '高次元への写像を見る →',
     iconWrap: 'bg-rose-50 border-rose-200', iconColor: 'text-rose-600',
     hoverBorder: 'hover:border-rose-300', tagColor: 'text-rose-600',

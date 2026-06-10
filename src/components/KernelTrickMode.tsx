@@ -121,7 +121,7 @@ export default function KernelTrickMode({ onBack }: { onBack: () => void }) {
             </div>
             <p className="text-xs text-slate-500 mt-2 leading-relaxed">
               2次元では直線で分離できないドーナツ型データも、半径方向の特徴 x²+y² を3次元目に加えると、
-              <strong className="text-slate-700">1枚の平面（ハイパープレーン）</strong>でスパッと分離できます。
+              <strong className="text-slate-700">1枚の平面（ハイパープレーン）</strong>で分離できます。
             </p>
           </Card>
 

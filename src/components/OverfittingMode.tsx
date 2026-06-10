@@ -10,7 +10,15 @@ import { randn } from '../utils/math';
 // iteration loop, no divergence, no NaN.
 
 const X_MIN = -1, X_MAX = 1;
-const trueFn = (x: number) => Math.sin(3 * x) + 0.3 * x;
+
+// Selectable "true" functions — different shapes stress the polynomial model
+// in different ways (smooth wave / sharp peak / steep step / simple cubic).
+const TARGETS: { key: string; label: string; f: (x: number) => number }[] = [
+  { key: 'sin', label: 'サイン波', f: x => Math.sin(3 * x) + 0.3 * x },
+  { key: 'gauss', label: 'ガウス（鋭い山）', f: x => 1.5 * Math.exp(-(x * x) / (2 * 0.35 * 0.35)) - 0.3 },
+  { key: 'step', label: 'ステップ（急な段差）', f: x => 0.9 * Math.tanh(5 * x) },
+  { key: 'cubic', label: '3次多項式', f: x => 1.8 * x * x * x - 0.9 * x },
+];
 
 const XS = Array.from({ length: 200 }, (_, i) => X_MIN + ((X_MAX - X_MIN) * i) / 199);
 
@@ -69,29 +77,31 @@ function rmse(w: number[], pts: Pt[]): number {
   return Math.sqrt(s / pts.length);
 }
 
-function makeData(): { train: Pt[]; test: Pt[] } {
+function makeData(f: (x: number) => number): { train: Pt[]; test: Pt[] } {
   const train: Pt[] = [];
   const nTrain = 12;
   for (let i = 0; i < nTrain; i++) {
     // jittered grid keeps points spread out even with so few samples
     const x = X_MIN + ((X_MAX - X_MIN) * (i + 0.5)) / nTrain + randn() * 0.03;
-    train.push({ x, y: trueFn(x) + randn() * 0.3 });
+    train.push({ x, y: f(x) + randn() * 0.3 });
   }
   const test: Pt[] = [];
   for (let i = 0; i < 40; i++) {
     const x = X_MIN + Math.random() * (X_MAX - X_MIN);
-    test.push({ x, y: trueFn(x) + randn() * 0.3 });
+    test.push({ x, y: f(x) + randn() * 0.3 });
   }
   return { train, test };
 }
 
 export default function OverfittingMode({ onBack }: { onBack: () => void }) {
   const [seed, setSeed] = useState(0);
+  const [targetKey, setTargetKey] = useState('sin');
   const [degree, setDegree] = useState(9);
   const [logLam, setLogLam] = useState(-8);
 
+  const trueFn = useMemo(() => TARGETS.find(t => t.key === targetKey)!.f, [targetKey]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const { train, test } = useMemo(() => makeData(), [seed]);
+  const { train, test } = useMemo(() => makeData(trueFn), [seed, trueFn]);
   const lambda = Math.pow(10, logLam);
 
   const weights = useMemo(() => ridgeFit(train, degree, lambda), [train, degree, lambda]);
@@ -124,6 +134,18 @@ export default function OverfittingMode({ onBack }: { onBack: () => void }) {
 
       <div className="grid lg:grid-cols-[300px_1fr] gap-6">
         <div className="space-y-5">
+          <Card title="真の関数（データの形）">
+            <div className="grid grid-cols-2 gap-2">
+              {TARGETS.map(t => (
+                <button key={t.key} onClick={() => setTargetKey(t.key)}
+                  className={`py-2 px-1 rounded-lg text-xs font-medium border transition-all ${
+                    targetKey === t.key ? 'bg-indigo-600 border-indigo-600 text-white'
+                      : 'bg-white border-slate-300 text-slate-600 hover:border-slate-400'
+                  }`}>{t.label}</button>
+              ))}
+            </div>
+          </Card>
+
           <Card title="モデルの複雑さ">
             <ParamControl label="多項式の次数" value={degree} min={1} max={9} step={1}
               onChange={v => setDegree(Math.round(v))} />
