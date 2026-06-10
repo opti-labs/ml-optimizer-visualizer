@@ -96,6 +96,9 @@ export default function ClusterRunPage({
             <div className="rounded-lg bg-emerald-950/40 border border-emerald-800/40 p-2.5 text-xs text-emerald-300 leading-relaxed mt-1">
               ✕ が重心です。「割り当て→重心を平均へ移動」を繰り返し、重心が動かなくなれば収束です。
             </div>
+            <div className="rounded-lg bg-amber-950/40 border border-amber-800/40 p-2.5 text-xs text-amber-300 leading-relaxed mt-2">
+              💡 収束が早いので、「ステップ」ボタンで1反復ずつ更新するのがおすすめです。
+            </div>
           </Card>
 
           <div className="grid grid-cols-2 gap-2">
