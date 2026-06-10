@@ -93,10 +93,10 @@ export default function ClusterRunPage({
               onChange={v => setMaxIter(Math.round(v))} accent="emerald" />
             <ParamControl label="アニメーション速度 (ms)" value={speed} min={50} max={1000} step={50}
               onChange={v => setSpeed(Math.round(v))} accent="orange" />
-            <div className="rounded-lg bg-emerald-950/40 border border-emerald-800/40 p-2.5 text-xs text-emerald-300 leading-relaxed mt-1">
+            <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-2.5 text-xs text-emerald-700 leading-relaxed mt-1">
               ✕ が重心です。「割り当て→重心を平均へ移動」を繰り返し、重心が動かなくなれば収束です。
             </div>
-            <div className="rounded-lg bg-amber-950/40 border border-amber-800/40 p-2.5 text-xs text-amber-300 leading-relaxed mt-2">
+            <div className="rounded-lg bg-amber-50 border border-amber-200 p-2.5 text-xs text-amber-700 leading-relaxed mt-2">
               💡 収束が早いので、「ステップ」ボタンで1反復ずつ更新するのがおすすめです。
             </div>
           </Card>
@@ -123,7 +123,7 @@ export default function ClusterRunPage({
 
         <div className="space-y-5">
           <Card title="重心(✕)の移動とクラスター割り当て" right={
-            <span className="text-xs font-mono text-indigo-400">Step {cur} / {hist.length - 1}</span>
+            <span className="text-xs font-mono text-indigo-600">Step {cur} / {hist.length - 1}</span>
           }>
             <div className="h-96">
               <Plot data={mainData} layout={{ ...darkLayout('x₁', 'x₂'), height: 380 }} config={plotConfig} />
@@ -136,9 +136,9 @@ export default function ClusterRunPage({
                 data={[{
                   x: hist.slice(0, cur + 1).map((_, i) => i),
                   y: hist.slice(0, cur + 1).map(h => h.inertia),
-                  mode: 'lines+markers', line: { color: '#34d399', width: 2 },
-                  marker: { color: '#34d399', size: 5 },
-                  fill: 'tozeroy', fillcolor: 'rgba(52,211,153,0.08)', type: 'scatter',
+                  mode: 'lines+markers', line: { color: '#059669', width: 2 },
+                  marker: { color: '#059669', size: 5 },
+                  fill: 'tozeroy', fillcolor: 'rgba(5,150,105,0.08)', type: 'scatter',
                 }] as Plotly.Data[]}
                 layout={{ ...darkLayout('イテレーション', 'イナーシャ'), height: 165 }}
                 config={plotConfig}
@@ -149,12 +149,12 @@ export default function ClusterRunPage({
           {(status === 'paused' || status === 'done') && hist.length > 1 && (
             <Card>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-slate-300">ステップをスクラブ（重心の移動を再生）</span>
-                <span className="text-xs font-mono text-indigo-400">Step {cur} / {hist.length - 1}</span>
+                <span className="text-xs font-medium text-slate-600">ステップをスクラブ（重心の移動を再生）</span>
+                <span className="text-xs font-mono text-indigo-600">Step {cur} / {hist.length - 1}</span>
               </div>
               <input type="range" min={0} max={hist.length - 1} value={cur}
                 onChange={e => setCur(Number(e.target.value))}
-                className="w-full h-2 appearance-none rounded-full bg-slate-600 accent-emerald-500 cursor-pointer" />
+                className="w-full h-2 appearance-none rounded-full bg-slate-200 accent-emerald-600 cursor-pointer" />
             </Card>
           )}
         </div>
@@ -166,8 +166,8 @@ export default function ClusterRunPage({
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between text-xs">
-      <span className="text-slate-400">{label}</span>
-      <span className="font-mono font-bold text-emerald-300">{value}</span>
+      <span className="text-slate-500">{label}</span>
+      <span className="font-mono font-bold text-emerald-600">{value}</span>
     </div>
   );
 }

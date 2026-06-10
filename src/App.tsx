@@ -33,7 +33,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0c14] text-slate-200">
+    <div className="min-h-screen bg-slate-50 text-slate-700">
       {screen === 'home' && (
         <HomePage onSelect={t => setScreen(t === 'fit' ? 'fit-setup' : 'cluster-setup')} />
       )}

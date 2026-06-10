@@ -44,8 +44,8 @@ export default function ClusterSetupPage({ config, setConfig, onBack, onNext }: 
                   onClick={() => setConfig({ ...config, k: kk })}
                   className={`flex-1 py-2 rounded-lg text-sm font-bold border transition-all ${
                     config.k === kk
-                      ? 'bg-emerald-600 border-emerald-500 text-white'
-                      : 'bg-slate-700/50 border-slate-600 text-slate-400 hover:border-slate-500'
+                      ? 'bg-emerald-600 border-emerald-600 text-white'
+                      : 'bg-white border-slate-300 text-slate-600 hover:border-slate-400'
                   }`}
                 >{kk}</button>
               ))}

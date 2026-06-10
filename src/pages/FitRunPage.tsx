@@ -90,7 +90,7 @@ export default function FitRunPage({
             <ParamControl label="アニメーション速度 (ms)" value={speed} min={30} max={600} step={10}
               onChange={v => setSpeed(Math.round(v))} accent="orange" />
             {lr > 0.4 && (
-              <div className="rounded-lg bg-amber-950/40 border border-amber-800/40 p-2 text-xs text-amber-300">
+              <div className="rounded-lg bg-amber-50 border border-amber-200 p-2 text-xs text-amber-700">
                 ⚠️ 学習率が大きいと発散することがあります
               </div>
             )}
@@ -110,14 +110,14 @@ export default function FitRunPage({
           {/* Param comparison */}
           <Card title="パラメータ推定値">
             <div className="space-y-1.5">
-              <div className="grid grid-cols-3 gap-2 text-[10px] uppercase tracking-wider text-slate-500 pb-1 border-b border-slate-700/50">
+              <div className="grid grid-cols-3 gap-2 text-[10px] uppercase tracking-wider text-slate-400 pb-1 border-b border-slate-200">
                 <span>θ</span><span className="text-right">真値</span><span className="text-right">推定</span>
               </div>
               {labels.map((lab, j) => (
                 <div key={j} className="grid grid-cols-3 gap-2 text-xs font-mono">
-                  <span className="text-slate-400">{lab}</span>
-                  <span className="text-right text-slate-300">{config.theta[j].toFixed(2)}</span>
-                  <span className="text-right text-indigo-300">{snap ? snap.theta[j].toFixed(2) : '—'}</span>
+                  <span className="text-slate-500">{lab}</span>
+                  <span className="text-right text-slate-600">{config.theta[j].toFixed(2)}</span>
+                  <span className="text-right text-indigo-600 font-semibold">{snap ? snap.theta[j].toFixed(2) : '—'}</span>
                 </div>
               ))}
             </div>
@@ -127,10 +127,10 @@ export default function FitRunPage({
         {/* Plots */}
         <div className="space-y-5">
           <Card title="フィッティングの様子" right={
-            <span className="text-xs font-mono text-indigo-400">Step {cur} / {hist.length - 1}</span>
+            <span className="text-xs font-mono text-indigo-600">Step {cur} / {hist.length - 1}</span>
           }>
             {diverged && (
-              <div className="mb-3 rounded-lg border border-red-700/50 bg-red-950/30 p-2.5 text-xs text-red-300">
+              <div className="mb-3 rounded-lg border border-red-200 bg-red-50 p-2.5 text-xs text-red-700">
                 🔥 発散しました。学習率を下げてリセットしてください。
               </div>
             )}
@@ -140,9 +140,9 @@ export default function FitRunPage({
                   { x: data.map(p => p.x), y: data.map(p => p.y), mode: 'markers',
                     marker: { color: '#475569', size: 5, opacity: 0.65 }, type: 'scatter', name: 'データ' },
                   { x: trueCurve.x, y: trueCurve.y, mode: 'lines',
-                    line: { color: '#64748b', width: 2, dash: 'dash' }, type: 'scatter', name: '真の関数' },
+                    line: { color: '#94a3b8', width: 2, dash: 'dash' }, type: 'scatter', name: '真の関数' },
                   { x: fitCurve.x, y: fitCurve.y, mode: 'lines',
-                    line: { color: '#818cf8', width: 3 }, type: 'scatter', name: '推定' },
+                    line: { color: '#4f46e5', width: 3 }, type: 'scatter', name: '推定' },
                 ] as Plotly.Data[]}
                 layout={{ ...darkLayout('x', 'y'), height: 310 }}
                 config={plotConfig}
@@ -150,7 +150,7 @@ export default function FitRunPage({
             </div>
             <p className="text-xs text-slate-500 mt-2">
               <span className="text-slate-400">— —</span> 真の関数（破線）
-              <span className="text-indigo-400">———</span> 勾配降下法による推定（実線）
+              <span className="text-indigo-600">———</span> 勾配降下法による推定（実線）
             </p>
           </Card>
 
@@ -160,8 +160,8 @@ export default function FitRunPage({
                 data={[{
                   x: hist.slice(0, cur + 1).map((_, i) => i),
                   y: hist.slice(0, cur + 1).map(h => (isFinite(h.loss) ? h.loss : null)),
-                  mode: 'lines', line: { color: diverged ? '#f87171' : '#34d399', width: 2 },
-                  fill: 'tozeroy', fillcolor: diverged ? 'rgba(248,113,113,0.08)' : 'rgba(52,211,153,0.08)',
+                  mode: 'lines', line: { color: diverged ? '#dc2626' : '#059669', width: 2 },
+                  fill: 'tozeroy', fillcolor: diverged ? 'rgba(220,38,38,0.08)' : 'rgba(5,150,105,0.08)',
                   connectgaps: false, type: 'scatter',
                 }] as Plotly.Data[]}
                 layout={{ ...darkLayout('イテレーション', 'MSE'), height: 175 }}
@@ -173,12 +173,12 @@ export default function FitRunPage({
           {(status === 'paused' || status === 'done') && hist.length > 1 && (
             <Card>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-slate-300">ステップをスクラブ</span>
-                <span className="text-xs font-mono text-indigo-400">Step {cur} / {hist.length - 1}</span>
+                <span className="text-xs font-medium text-slate-600">ステップをスクラブ</span>
+                <span className="text-xs font-mono text-indigo-600">Step {cur} / {hist.length - 1}</span>
               </div>
               <input type="range" min={0} max={hist.length - 1} value={cur}
                 onChange={e => setCur(Number(e.target.value))}
-                className="w-full h-2 appearance-none rounded-full bg-slate-600 accent-indigo-500 cursor-pointer" />
+                className="w-full h-2 appearance-none rounded-full bg-slate-200 accent-indigo-600 cursor-pointer" />
             </Card>
           )}
         </div>

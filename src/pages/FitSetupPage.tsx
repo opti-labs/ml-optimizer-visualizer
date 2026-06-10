@@ -51,7 +51,7 @@ export default function FitSetupPage({ config, setConfig, onBack, onNext }: Prop
         onBack={onBack}
       />
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-6 items-start">
         {/* Left: configuration */}
         <div className="space-y-5">
           <Card title="① 関数形を選ぶ">
@@ -62,8 +62,8 @@ export default function FitSetupPage({ config, setConfig, onBack, onNext }: Prop
                   onClick={() => setType(t)}
                   className={`py-2.5 px-2 rounded-lg text-xs font-medium text-left transition-all border ${
                     config.type === t
-                      ? 'bg-indigo-600 border-indigo-500 text-white'
-                      : 'bg-slate-700/50 border-slate-600 text-slate-400 hover:border-slate-500'
+                      ? 'bg-indigo-600 border-indigo-600 text-white'
+                      : 'bg-white border-slate-300 text-slate-600 hover:border-slate-400'
                   }`}
                 >
                   {FIT_LABEL[t]}
@@ -73,7 +73,7 @@ export default function FitSetupPage({ config, setConfig, onBack, onNext }: Prop
 
             {config.type === 'gmm' && (
               <div className="mt-4">
-                <label className="block text-xs text-slate-400 mb-1.5">潜在変数の次元 k（成分数）</label>
+                <label className="block text-xs text-slate-600 mb-1.5">潜在変数の次元 k（成分数）</label>
                 <div className="flex gap-2">
                   {[2, 3, 4].map(kk => (
                     <button
@@ -81,8 +81,8 @@ export default function FitSetupPage({ config, setConfig, onBack, onNext }: Prop
                       onClick={() => setK(kk)}
                       className={`flex-1 py-1.5 rounded-lg text-sm font-bold border transition-all ${
                         config.k === kk
-                          ? 'bg-indigo-600 border-indigo-500 text-white'
-                          : 'bg-slate-700/50 border-slate-600 text-slate-400 hover:border-slate-500'
+                          ? 'bg-indigo-600 border-indigo-600 text-white'
+                          : 'bg-white border-slate-300 text-slate-600 hover:border-slate-400'
                       }`}
                     >{kk}</button>
                   ))}
@@ -91,8 +91,17 @@ export default function FitSetupPage({ config, setConfig, onBack, onNext }: Prop
             )}
           </Card>
 
-          <Card title="② 真のパラメータ θ を設定">
-            <div className="max-h-72 overflow-y-auto pr-1">
+          {/* ② データ生成設定（旧③） */}
+          <Card title="② データ生成設定">
+            <ParamControl label="データ件数 N" value={config.n} min={50} max={500} step={10}
+              onChange={v => setConfig({ ...config, n: Math.round(v) })} accent="emerald" />
+            <ParamControl label="ノイズ強度 σ" value={config.noise} min={0.01} max={1} step={0.01}
+              onChange={v => setConfig({ ...config, noise: v })} accent="emerald" />
+          </Card>
+
+          {/* ③ 真のパラメータ（旧②）— プレビューを見ながら調整 */}
+          <Card title="③ 真のパラメータ θ を設定">
+            <div className="max-h-80 overflow-y-auto pr-1">
               {fields.map((f, i) => (
                 <ParamControl
                   key={i}
@@ -104,27 +113,20 @@ export default function FitSetupPage({ config, setConfig, onBack, onNext }: Prop
               ))}
             </div>
             <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-              ここで決めた θ が「真の関数」です。右のプレビューに反映されます。勾配降下法はこの θ を
+              ここで決めた θ が「真の関数」です。右のプレビューを見ながら調整できます。勾配降下法はこの θ を
               ランダムな初期値から推定します。
             </p>
           </Card>
-
-          <Card title="③ データ生成設定">
-            <ParamControl label="データ件数 N" value={config.n} min={50} max={500} step={10}
-              onChange={v => setConfig({ ...config, n: Math.round(v) })} accent="emerald" />
-            <ParamControl label="ノイズ強度 σ" value={config.noise} min={0.01} max={1} step={0.01}
-              onChange={v => setConfig({ ...config, noise: v })} accent="emerald" />
-          </Card>
         </div>
 
-        {/* Right: preview + next */}
-        <div className="space-y-5">
+        {/* Right: preview + next (sticky so it stays visible while editing params) */}
+        <div className="space-y-5 lg:sticky lg:top-6">
           <Card title="真の関数プレビュー">
             <div className="h-80">
               <Plot
                 data={[{
                   x: curve.x, y: curve.y, mode: 'lines',
-                  line: { color: '#818cf8', width: 3 }, type: 'scatter',
+                  line: { color: '#4f46e5', width: 3 }, type: 'scatter',
                 }] as Plotly.Data[]}
                 layout={{ ...darkLayout('x', 'y'), height: 310 }}
                 config={plotConfig}
